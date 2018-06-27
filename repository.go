@@ -2,7 +2,7 @@
 package main
 
 import (
-	pb "github.com/eluts15/microservices/shipping/consignment-service/proto/consignment"
+	pb "github.com/eluts15/shipping-consignment-service/proto/consignment"
 	"gopkg.in.v2"
 )
 

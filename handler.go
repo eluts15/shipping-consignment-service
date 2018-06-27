@@ -5,11 +5,12 @@ import (
 	"context"
 	"log"
 
-	pb "github.com/eluts15/microservices/shipping/consignment-service/consignment"
-	vesselProto "github.com/eluts15/microservices/shipping/vessel-service/vessel"
+	pb "github.com/eluts15/shipping-consignment-service/proto/consignment"
+	vesselProto "github.com/eluts15/shipping-vessel-service/proto/vessel"
 )
 
 type handler struct {
+	session      *mgo.Session
 	vesselClient vesselProto.VesselServiceClient
 }
 
@@ -20,6 +21,8 @@ func (s *handler) GetRepo() Repository {
 func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, res *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
+
+	log.Println("Creating: ", req)
 
 	vesselResponse, err := s.vesselClient.FindAvailable(context.Background(), &vesselProto.Specification{
 		MaxWeight: req.Weight,
@@ -32,6 +35,7 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 
 	req.VesselId = vesselResponse.Vessel.Id
 
+	// Save our consignment
 	err = repo.Create(req)
 	if err != nil {
 		return err
@@ -45,6 +49,7 @@ func (s *handler) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 func (s *handler) GetConsignments(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
+
 	consignments, err := repo.GetAll()
 	if err != nil {
 		return err

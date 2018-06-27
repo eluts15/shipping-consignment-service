@@ -1,9 +1,9 @@
+// consignment-service/proto/consignment/consignment.proto
 syntax = "proto3";
 
-service ShippingService {
-  rpc CreateConsignment(Consignment) returns (Response) {}
-
-  rpc GetConsignments(GetRequest) returns (Response) {}
+service ConsignmentService {
+  rpc Create(Consignment) returns (Response) {}
+  rpc Get(GetRequest) returns (Response) {}
 }
 
 message Consignment {
